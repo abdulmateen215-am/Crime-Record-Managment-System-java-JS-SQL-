@@ -1,5 +1,5 @@
 # CRMS — Criminal Record Management System
-### Punjab Police Department | Roll # AI-25 B | NUTech | CS160 | Ms. Sumera Aslam
+### Punjab Police Department 
 
 ---
 
