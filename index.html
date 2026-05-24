@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRMS — Criminal Record Management System | Punjab Police</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-logo">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="40" height="40" rx="10" fill="#2563eb"/>
+        <path d="M20 4L8 9.5V18c0 7.5 5.2 14.5 12 16.3C27.8 32.5 33 25.5 33 18V9.5L20 4z" fill="white" opacity="0.15"/>
+        <path d="M20 6L10 11V18.5c0 6.5 4.5 12.6 10 14.2 5.5-1.6 10-7.7 10-14.2V11L20 6z" fill="white" opacity="0.25"/>
+        <text x="20" y="25" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="800" fill="white" letter-spacing="0.5">MD</text>
+      </svg>
+    </div>
+    <div class="brand-text">
+      <h1>CRMS</h1>
+      <p>Punjab Police Department</p>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">Main</div>
+    <button class="nav-item active" onclick="showView('dashboard',this)">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+      Dashboard
+    </button>
+    <button class="nav-item" onclick="showView('search',this)">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      Search Criminal
+    </button>
+    <button class="nav-item" onclick="showView('wanted',this)">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+      Most Wanted
+      <span class="nav-badge" id="nav-badge-wanted">0</span>
+    </button>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">Reports</div>
+    <button class="nav-item" onclick="showView('stats',this)">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 9.2h3V19H5V9.2zM10.6 5h2.8v14h-2.8V5zm5.6 8H19v6h-2.8v-6z"/></svg>
+      Monthly Statistics
+    </button>
+    <button class="nav-item" onclick="showView('officers',this)">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+      Officer Performance
+    </button>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">Cases</div>
+    <button class="nav-item" onclick="showView('cases',this)">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 6h-2.18c.07-.44.18-.88.18-1.36C18 2.53 16.47 1 14.64 1 13.11 1 12.32 1.79 11.35 3.1L12 4l.65-.9C11.67 1.79 10.89 1 9.36 1 7.53 1 6 2.53 6 4.64c0 .48.11.92.18 1.36H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2z"/></svg>
+      Case Management
+      <span class="nav-badge" id="nav-badge-open">0</span>
+    </button>
+    <button class="nav-item" onclick="showView('criminals-list',this)">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+      All Criminals
+      <span class="nav-badge" id="nav-badge-criminals">0</span>
+    </button>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="avatar-admin">MS</div>
+    <div class="sidebar-footer-text">
+      <p>ACP Praduyman</p>
+      <span>System Administrator</span>
+    </div>
+  </div>
+</aside>
+
+<main class="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <h2 id="page-title">Dashboard</h2>
+      <p id="page-sub">Overview of criminal records &amp; case activity</p>
+    </div>
+    <div class="topbar-right">
+      <div class="live-badge"><span class="live-dot"></span> LIVE SYSTEM</div>
+      <span class="time-display" id="clock"></span>
+    </div>
+  </header>
+
+  <div class="content">
+    <div class="conn-banner" id="conn-banner"><span>⏳</span> Connecting to CRMS backend…</div>
+
+    <!-- DASHBOARD -->
+    <div class="view active" id="view-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon"><svg viewBox="0 0 24 24" fill="#2563eb"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div>
+          <div class="stat-label">Total Criminals</div><div class="stat-value" id="kpi-criminals">—</div><div class="stat-sub">Registered in database</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-icon"><svg viewBox="0 0 24 24" fill="#b91c1c"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg></div>
+          <div class="stat-label">Most Wanted</div><div class="stat-value" id="kpi-wanted">—</div><div class="stat-sub">Active wanted persons</div>
+        </div>
+        <div class="stat-card amber">
+          <div class="stat-icon"><svg viewBox="0 0 24 24" fill="#b45309"><path d="M20 6h-2.18c.07-.44.18-.88.18-1.36C18 2.53 16.47 1 14.64 1 13.11 1 12.32 1.79 11.35 3.1L12 4l.65-.9C11.67 1.79 10.89 1 9.36 1 7.53 1 6 2.53 6 4.64c0 .48.11.92.18 1.36H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2z"/></svg></div>
+          <div class="stat-label">Open Cases</div><div class="stat-value" id="kpi-open">—</div><div class="stat-sub">Awaiting investigation</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-icon"><svg viewBox="0 0 24 24" fill="#15803d"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg></div>
+          <div class="stat-label">Closed Cases</div><div class="stat-value" id="kpi-closed">—</div><div class="stat-sub">Successfully resolved</div>
+        </div>
+      </div>
+      <div class="grid-2 mb-22">
+        <div class="card">
+          <div class="card-header">
+            <div><div class="card-title">Recent Cases</div><div class="card-sub">Latest 8 filed cases</div></div>
+            <button class="btn btn-secondary btn-sm" onclick="showView('cases',document.querySelectorAll('.nav-item')[4])">View All →</button>
+          </div>
+          <div class="table-wrap"><table><thead><tr><th>Case ID</th><th>Title</th><th>Crime</th><th>Status</th></tr></thead><tbody id="dash-cases-tbody"><tr><td colspan="4"><div class="spinner-wrap"><div class="spinner"></div></div></td></tr></tbody></table></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Cases by Crime Type</div></div>
+          <div class="card-padded" id="dash-crime-bars"></div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card card-padded">
+          <div class="card-title" style="margin-bottom:14px">Case Status Summary</div>
+          <div id="dash-status"></div>
+        </div>
+        <div class="card card-padded">
+          <div class="card-title" style="margin-bottom:14px">Quick Actions</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <button class="btn btn-primary" onclick="openAddCriminalModal()"><svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>Register New Criminal</button>
+            <button class="btn btn-secondary" onclick="openAddCaseModal()"><svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>File New Case (FIR)</button>
+            <button class="btn btn-secondary" onclick="showView('wanted',document.querySelectorAll('.nav-item')[2])">View Most Wanted List →</button>
+            <button class="btn btn-secondary" onclick="showView('stats',document.querySelectorAll('.nav-item')[3])">Monthly Statistics →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEARCH -->
+    <div class="view" id="view-search">
+      <div class="search-bar">
+        <input class="input" id="search-input" placeholder="Enter CNIC (e.g. 3740512345678) or full name…" oninput="performSearch()">
+        <select class="select-input" id="search-type" onchange="performSearch()">
+          <option value="all">Search All</option><option value="cnic">By CNIC</option><option value="name">By Name</option>
+        </select>
+        <button class="btn btn-primary" onclick="performSearch()">Search</button>
+        <button class="btn btn-secondary" onclick="clearSearch()">Clear</button>
+      </div>
+      <div id="search-results"><div class="empty-state"><div class="empty-icon">🔍</div><h3>Search Criminal Records</h3><p>Enter a CNIC number or full name to look up records.</p></div></div>
+    </div>
+
+    <!-- MOST WANTED -->
+    <div class="view" id="view-wanted">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <div class="fs-13 text-muted">Wanted criminals ranked by number of linked cases</div>
+        <button class="btn btn-primary btn-sm" onclick="openAddCriminalModal()">+ Register Criminal</button>
+      </div>
+      <div class="card"><div class="table-wrap"><table>
+        <thead><tr><th>#</th><th>Criminal</th><th>CNIC</th><th>Cases</th><th>Status</th><th>Address</th><th>Actions</th></tr></thead>
+        <tbody id="wanted-tbody"><tr><td colspan="7"><div class="spinner-wrap"><div class="spinner"></div></div></td></tr></tbody>
+      </table></div></div>
+    </div>
+
+    <!-- STATS -->
+    <div class="view" id="view-stats">
+      <div class="card mb-16">
+        <div class="card-header">
+          <div><div class="card-title">Monthly Case Filing</div><div class="card-sub">Aggregated count per month</div></div>
+          <select class="select-input" id="chart-type-select" onchange="changeChartType()"><option value="bar">Bar Chart</option><option value="line">Line Chart</option></select>
+        </div>
+        <div class="chart-wrap"><div class="chart-h260"><canvas id="monthlyChart"></canvas></div></div>
+      </div>
+      <div class="grid-2">
+        <div class="card"><div class="card-header"><div class="card-title">Cases by Crime Type</div></div><div class="chart-wrap"><div class="chart-h220"><canvas id="crimeTypeChart"></canvas></div></div></div>
+        <div class="card"><div class="card-header"><div class="card-title">Quarter-wise Breakdown</div></div><div class="chart-wrap"><div class="chart-h220"><canvas id="quarterChart"></canvas></div></div></div>
+      </div>
+    </div>
+
+    <!-- OFFICERS -->
+    <div class="view" id="view-officers">
+      <div class="grid-3 mb-16">
+        <div class="stat-card"><div class="stat-label">Total Cases Handled</div><div class="stat-value" id="off-total-cases">—</div></div>
+        <div class="stat-card green"><div class="stat-label">Total Arrests Made</div><div class="stat-value" id="off-total-arrests">—</div></div>
+        <div class="stat-card amber"><div class="stat-label">Avg Resolution Rate</div><div class="stat-value" id="off-avg-rate">—</div></div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">Officer Performance Report</div><div class="card-sub">Ranked by cases handled</div></div>
+          <select class="select-input" id="officer-station-filter" onchange="loadOfficers()">
+            <option value="">All Stations</option>
+            <option>Gulberg Police Station</option><option>Model Town Police Station</option>
+            <option>Cantt Police Station</option><option>Faisal Town Police Station</option><option>Iqbal Town Police Station</option>
+          </select>
+        </div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Officer</th><th>Badge #</th><th>Station</th><th>Cases Handled</th><th>Arrests Made</th><th>Resolution Rate</th><th>Rating</th></tr></thead>
+          <tbody id="officers-tbody"><tr><td colspan="7"><div class="spinner-wrap"><div class="spinner"></div></div></td></tr></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- CASE MANAGEMENT -->
+    <div class="view" id="view-cases">
+      <div class="filter-bar">
+        <button class="filter-btn active" onclick="filterCasesBtn('',this)">All Cases</button>
+        <button class="filter-btn" onclick="filterCasesBtn('Open',this)">● Open</button>
+        <button class="filter-btn" onclick="filterCasesBtn('Under Investigation',this)">● Under Investigation</button>
+        <button class="filter-btn" onclick="filterCasesBtn('Closed',this)">● Closed</button>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">All Cases</div><div class="card-sub" id="cases-count-label">Loading…</div></div>
+          <button class="btn btn-primary btn-sm" onclick="openAddCaseModal()">+ File New Case</button>
+        </div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Case ID</th><th>Title</th><th>Crime Type</th><th>Location</th><th>Severity</th><th>Status</th><th>Date Filed</th><th>Actions</th></tr></thead>
+          <tbody id="cases-tbody"><tr><td colspan="8"><div class="spinner-wrap"><div class="spinner"></div></div></td></tr></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- ALL CRIMINALS LIST -->
+    <div class="view" id="view-criminals-list">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <div class="fs-13 text-muted">All registered criminals — edit or delete any record</div>
+        <button class="btn btn-primary btn-sm" onclick="openAddCriminalModal()">+ Register Criminal</button>
+      </div>
+      <div class="card"><div class="table-wrap"><table>
+        <thead><tr><th>ID</th><th>Name</th><th>CNIC</th><th>Gender</th><th>Phone</th><th>Status</th><th>Cases</th><th>Actions</th></tr></thead>
+        <tbody id="criminals-list-tbody"><tr><td colspan="8"><div class="spinner-wrap"><div class="spinner"></div></div></td></tr></tbody>
+      </table></div></div>
+    </div>
+
+  </div>
+</main>
+
+<!-- ═══ MODALS ═══ -->
+
+<!-- Add/Edit Criminal -->
+<div class="modal-overlay" id="modal-criminal">
+  <div class="modal">
+    <div class="modal-header"><h3 id="modal-criminal-title">Register New Criminal</h3><button class="modal-close" onclick="closeModal('modal-criminal')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-criminal-id">
+      <div class="grid-2">
+        <div class="form-group"><label class="form-label">Full Name *</label><input class="form-control" id="new-name" placeholder="e.g. Tariq Mehmood"></div>
+        <div class="form-group"><label class="form-label">CNIC * (13 digits)</label><input class="form-control" id="new-cnic" placeholder="3740512345678" maxlength="13"></div>
+      </div>
+      <div class="grid-2">
+        <div class="form-group"><label class="form-label">Date of Birth</label><input class="form-control" type="date" id="new-dob"></div>
+        <div class="form-group"><label class="form-label">Gender</label><select class="form-control" id="new-gender"><option>Male</option><option>Female</option><option>Other</option></select></div>
+      </div>
+      <div class="grid-2">
+        <div class="form-group"><label class="form-label">Phone</label><input class="form-control" id="new-phone" placeholder="0300-1234567"></div>
+        <div class="form-group"><label class="form-label">Status</label><select class="form-control" id="new-status"><option>Wanted</option><option>Arrested</option><option>Released</option></select></div>
+      </div>
+      <div class="form-group"><label class="form-label">Address</label><input class="form-control" id="new-address" placeholder="House #, Street, Area, City"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-criminal')">Cancel</button>
+      <button class="btn btn-primary" id="btn-save-criminal" onclick="saveCriminal()">Register Criminal</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Case -->
+<div class="modal-overlay" id="modal-case">
+  <div class="modal">
+    <div class="modal-header"><h3 id="modal-case-title">File New Case (FIR)</h3><button class="modal-close" onclick="closeModal('modal-case')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-case-id">
+      <div class="form-group"><label class="form-label">Case Title *</label><input class="form-control" id="nc-title" placeholder="Brief description of the incident"></div>
+      <div class="grid-2">
+        <div class="form-group"><label class="form-label">Crime Type *</label><select class="form-control" id="nc-crime"><option>Loading…</option></select></div>
+        <div class="form-group"><label class="form-label">Severity *</label><select class="form-control" id="nc-severity"><option>Loading…</option></select></div>
+      </div>
+      <div class="grid-2">
+        <div class="form-group"><label class="form-label">Location *</label><select class="form-control" id="nc-location"><option>Loading…</option></select></div>
+        <div class="form-group"><label class="form-label">Date Filed *</label><input class="form-control" type="date" id="nc-date"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Status</label><select class="form-control" id="nc-status"><option>Open</option><option>Under Investigation</option><option>Closed</option></select></div>
+      <div class="form-group"><label class="form-label">Description</label><textarea class="form-control" id="nc-desc" placeholder="Detailed description…"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-case')">Cancel</button>
+      <button class="btn btn-primary" id="btn-save-case" onclick="saveCase()">File Case</button>
+    </div>
+  </div>
+</div>
+
+<!-- Update Status -->
+<div class="modal-overlay" id="modal-status">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-header"><h3>Update Case Status</h3><button class="modal-close" onclick="closeModal('modal-status')">✕</button></div>
+    <div class="modal-body">
+      <p class="fs-13 text-muted" style="margin-bottom:16px">Case: <strong id="update-case-title"></strong></p>
+      <div class="form-group"><label class="form-label">New Status</label>
+        <select class="form-control" id="update-status-select"><option>Open</option><option>Under Investigation</option><option>Closed</option></select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-status')">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmStatusUpdate()">Update Status</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirm -->
+<div class="modal-overlay" id="modal-delete">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-header"><h3>⚠️ Confirm Delete</h3><button class="modal-close" onclick="closeModal('modal-delete')">✕</button></div>
+    <div class="modal-body">
+      <p class="fs-13" style="margin-bottom:8px">Are you sure you want to permanently delete:</p>
+      <p class="fw-700 fs-14" id="delete-item-name" style="color:var(--danger)"></p>
+      <p class="fs-12 text-muted" style="margin-top:10px">⚠️ This action cannot be undone. All related records will also be deleted.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-delete')">Cancel</button>
+      <button class="btn btn-danger" id="btn-confirm-delete" onclick="confirmDelete()">Yes, Delete Permanently</button>
+    </div>
+  </div>
+</div>
+
+<!-- Case Detail -->
+<div class="modal-overlay" id="modal-case-detail">
+  <div class="modal" style="width:660px">
+    <div class="modal-header"><h3>Case Full Detail</h3><button class="modal-close" onclick="closeModal('modal-case-detail')">✕</button></div>
+    <div class="modal-body" id="case-detail-body"></div>
+    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modal-case-detail')">Close</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="/js/app.js"></script>
+</body>
+</html>
