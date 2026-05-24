@@ -1,97 +1,117 @@
-# CRMS — Criminal Record Management System
-### Punjab Police Department 
+# 🚔 CRMS — Criminal Record Management System
+### Punjab Police Department
+
+A full-stack web application for managing criminal records, cases, evidence, FIR complaints, and court proceedings — built with Node.js, Express.js, and Microsoft SQL Server.
 
 ---
 
-## Project Structure
+## 📌 What is CRMS?
+
+CRMS is a digital record management system designed for the Punjab Police Department. It replaces paper-based filing with a fast, searchable web interface where officers can register criminals, file cases, attach evidence, record witnesses and victims, and generate reports — all from a browser.
+
+---
+
+## ⚙️ Tech Stack
+
+| Layer | Technology |
+|---|---|
+| **Frontend** | HTML5, CSS3, Vanilla JavaScript |
+| **Backend** | Node.js, Express.js |
+| **Database** | Microsoft SQL Server (T-SQL) |
+| **DB Driver** | mssql (npm) |
+| **Config** | dotenv |
+
+---
+
+## 📁 Project Structure
 
 ```
 crms-project/
-├── server.js                   ← Node.js + Express backend (Entry Point)
-├── package.json                ← Dependencies
-├── .env.example                ← Environment config template
-│
 ├── config/
-│   └── db.js                   ← MySQL connection pool
-│
-├── routes/
-│   ├── criminals.js            ← /api/criminals  (CRUD + search)
-│   ├── cases.js                ← /api/cases      (CRUD + status update)
-│   ├── reports.js              ← /api/reports    (monthly, officers, dashboard)
-│   └── lookup.js               ← /api/lookup     (dropdowns)
-│
+│   └── db.js              # SQL Server connection pool
 ├── database/
-│   └── crms_database.sql       ← Full MySQL schema + sample data (15 tables, 3NF)
-│
-└── public/                     ← Frontend (served by Express)
-    ├── index.html              ← Main HTML page (all 6 views)
-    ├── css/
-    │   └── style.css           ← Complete stylesheet
-    └── js/
-        └── app.js              ← All frontend JS + Fetch API calls
+│   ├── crms_database_mssql.sql        # Main schema + sample data
+│   └── crms_database_fixed_mssql.sql  # Fixed version
+├── public/
+│   ├── index.html         # Main frontend interface
+│   ├── css/               # Stylesheets
+│   └── js/                # Frontend JavaScript
+├── routes/
+│   ├── cases.js           # Case CRUD API endpoints
+│   ├── criminals.js       # Criminal CRUD API endpoints
+│   ├── lookup.js          # Dropdown data (crime types, locations, officers)
+│   └── reports.js         # Dashboard & report endpoints
+├── .env                   # Environment variables (not committed)
+├── .env.example           # Environment variable template
+├── server.js              # App entry point
+└── package.json
 ```
 
 ---
 
-## Setup Instructions
+## 🗄️ Database — 15 Tables
 
-### Step 1 — Install MySQL & Create Database
+The database is fully normalised (3NF) and runs on Microsoft SQL Server.
 
-1. Open **MySQL Workbench** or MySQL command line
-2. Run the SQL file:
-```sql
-SOURCE path/to/crms-project/database/crms_database.sql;
-```
-Or in MySQL Workbench: File → Open SQL Script → select `crms_database.sql` → Run All
-
-This creates:
-- Database: `crms_db`
-- All **15 normalized tables** (3NF)
-- Sample data (12 criminals, 15 cases, 10 officers, 5 stations, evidence, witnesses, etc.)
-- Views, Stored Procedures
+| # | Table | Purpose |
+|---|---|---|
+| 1 | `Police_Stations` | Station info and location |
+| 2 | `Police_Officers` | Officer details and badge numbers |
+| 3 | `Crime_Types` | Crime categories (Robbery, Murder, Drugs…) |
+| 4 | `Crime_Severity` | Minor / Moderate / Severe levels |
+| 5 | `Locations` | Areas linked to stations |
+| 6 | `Criminals` | Criminal profiles with CNIC |
+| 7 | `Cases` | Core case records |
+| 8 | `Criminal_Case` | Links criminals to cases (M:N) |
+| 9 | `Case_Officers` | Links officers to cases (M:N) |
+| 10 | `Evidence` | Evidence items per case |
+| 11 | `Arrest_Records` | Arrest details and bail status |
+| 12 | `Witnesses` | Witness statements per case |
+| 13 | `Victims` | Victim details per case |
+| 14 | `FIR_Complaints` | FIR registration records |
+| 15 | `Court_Cases` | Court hearings and verdicts |
 
 ---
 
-### Step 2 — Configure Environment
+## 🚀 How to Run
+
+### Prerequisites
+- [Node.js](https://nodejs.org) (v18 or above)
+- Microsoft SQL Server + SSMS
+
+### 1. Set up the database
+
+Open SSMS, connect to your server, open `database/crms_database_mssql.sql` and press **F5** to run it. This creates the `crms_db` database with all tables and sample data.
+
+### 2. Clone the repo and install dependencies
 
 ```bash
+git clone https://github.com/your-username/crms-project.git
 cd crms-project
-cp .env.example .env
-```
-
-Edit `.env`:
-```
-DB_HOST=localhost
-DB_PORT=3306
-DB_USER=root
-DB_PASSWORD=your_mysql_password
-DB_NAME=crms_db
-PORT=3000
-```
-
----
-
-### Step 3 — Install Node.js Dependencies
-
-```bash
 npm install
 ```
 
----
+### 3. Configure environment variables
 
-### Step 4 — Start the Server
+Copy `.env.example` to `.env` and fill in your SQL Server details:
 
-```bash
-# Production
-npm start
-
-# Development (auto-restart)
-npm run dev
+```env
+DB_SERVER=YOURPC\SQLEXPRESS
+DB_NAME=crms_db
+DB_USER=sa
+DB_PASSWORD=your_password
+PORT=3000
 ```
 
----
+> **Note:** If your server name contains a backslash (e.g. `DESKTOP-ABC\SQLEXPRESS`), use double backslash in the `.env` file: `DESKTOP-ABC\\SQLEXPRESS`
 
-### Step 5 — Open Browser
+### 4. Run the server
+
+```bash
+node server.js
+```
+
+### 5. Open in browser
 
 ```
 http://localhost:3000
@@ -99,73 +119,46 @@ http://localhost:3000
 
 ---
 
-## REST API Endpoints
+## 🔌 API Endpoints
 
 | Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | /api/criminals | All criminals with case count |
-| GET | /api/criminals/cnic/:cnic | Search by CNIC |
-| GET | /api/criminals/search/:name | Search by name |
-| GET | /api/criminals/wanted | Most wanted list |
-| GET | /api/criminals/:id | Single criminal + all cases |
-| POST | /api/criminals | Add new criminal |
-| PUT | /api/criminals/:id/status | Update criminal status |
-| DELETE | /api/criminals/:id | Delete criminal |
-| GET | /api/cases | All cases (optional ?status=Open) |
-| GET | /api/cases/:id | Full case detail (criminals, officers, evidence, witnesses, victims, FIR, court) |
-| POST | /api/cases | File new case |
-| PUT | /api/cases/:id/status | Update case status |
-| GET | /api/cases/summary/status | Status count summary |
-| GET | /api/reports/dashboard | KPI numbers for dashboard |
-| GET | /api/reports/monthly | Monthly case statistics |
-| GET | /api/reports/officers | Officer performance |
-| GET | /api/reports/crime-types | Crime type breakdown |
-| GET | /api/lookup/crime-types | Crime types for dropdowns |
-| GET | /api/lookup/crime-severity | Severity levels |
-| GET | /api/lookup/locations | Locations + stations |
-| GET | /api/lookup/stations | All police stations |
-| GET | /api/lookup/officers | All officers |
-| GET | /api/health | Server health check |
+|---|---|---|
+| GET | `/api/cases` | Get all cases |
+| POST | `/api/cases` | File a new case |
+| GET | `/api/cases/:id` | Get full case details |
+| PUT | `/api/cases/:id/status` | Update case status |
+| DELETE | `/api/cases/:id` | Delete a case |
+| GET | `/api/criminals` | Get all criminals |
+| POST | `/api/criminals` | Register a new criminal |
+| GET | `/api/criminals/cnic/:cnic` | Search by CNIC |
+| GET | `/api/criminals/search/:name` | Search by name |
+| GET | `/api/criminals/wanted` | Get all wanted criminals |
+| GET | `/api/lookup/crime-types` | Crime type dropdown data |
+| GET | `/api/lookup/locations` | Locations dropdown data |
+| GET | `/api/reports/dashboard` | Dashboard summary counts |
+| GET | `/api/reports/monthly` | Monthly crime statistics |
+| GET | `/api/reports/officers` | Officer performance report |
 
 ---
 
-## Database — 15 Tables (3NF)
+## ✨ Features
 
-| # | Table | Type | Purpose |
-|---|-------|------|---------|
-| 1 | Police_Stations | Strong | Station details |
-| 2 | Police_Officers | Strong | Officer profiles |
-| 3 | Crime_Types | Lookup | Robbery, Murder, Drugs… |
-| 4 | Crime_Severity | Lookup | Minor / Moderate / Severe |
-| 5 | Locations | Strong | Crime scene areas |
-| 6 | Criminals | Strong | Criminal profiles (CNIC keyed) |
-| 7 | Cases | Strong | Core case records |
-| 8 | Criminal_Case | Junction M:N | Criminals ↔ Cases |
-| 9 | Case_Officers | Junction M:N | Cases ↔ Officers |
-| 10 | Evidence | Weak | Evidence per case |
-| 11 | Arrest_Records | Strong | Arrest log |
-| 12 | Witnesses | Weak | Witness statements |
-| 13 | Victims | Weak | Victim details |
-| 14 | FIR_Complaints | Weak | First Information Reports |
-| 15 | Court_Cases | Weak | Court hearing records |
+- ✅ Register criminals with CNIC, status (Wanted / Arrested / Released)
+- ✅ File cases linked to crime type, severity and location
+- ✅ Search criminals by CNIC or name
+- ✅ Attach evidence, witnesses and victims to cases
+- ✅ File FIR complaints and log court proceedings
+- ✅ Dashboard with live counts — total criminals, open cases, wanted list
+- ✅ Monthly crime statistics and officer performance reports
+- ✅ Full CRUD on cases and criminals via REST API
 
 ---
 
-## Tech Stack
+## 👤 Author
 
-| Layer | Technology |
-|-------|-----------|
-| Database | MySQL 8.0 — 15 tables, 3NF, Views, Stored Procedures |
-| Backend | Node.js + Express.js REST API |
-| Frontend | HTML5, CSS3, Vanilla JavaScript (Fetch API) |
-| Charts | Chart.js 4.4 |
-| DB Driver | mysql2 with parameterized queries (SQL injection safe) |
+Abdul Mateen | University Semester Project
 
 ---
 
-## Security
 
-- All database queries use **parameterized placeholders** (`?`) — never string concatenation
-- CNIC uniqueness enforced at DB level (`UNIQUE` constraint)
-- Foreign key constraints enforce referential integrity
-- Input validation on all POST/PUT routes
+This project was built for academic purposes.
